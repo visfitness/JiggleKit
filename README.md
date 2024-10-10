@@ -7,7 +7,7 @@
 ![A set of rectangle of different shapes and colors all jiggling together in a delightful manner.](/Documentation/jiggle.gif)
 
 > [!NOTE]
-> Be sure to check out the package documentation [here](https://visfitness.github.io/JiggleKit/documentation/JiggleKit)
+> Be sure to check out the package documentation [here](https://visfitness.github.io/JiggleKit/documentation/jigglekit/)
                                         
 ## Usage
 
@@ -48,3 +48,7 @@ struct VeryJigglingRectable: View {
 ## Copyright and License
 
 Copyright [Vis Fitness Inc](https://vis.fitness). Licensed under the [MIT License](https://github.com/visfitness/reorderable/blob/main/LICENSE)
+
+## Credit
+
+This was inspired by [this gist](https://gist.github.com/markmals/075273b58a94db20917235fdd5cda3cc)
