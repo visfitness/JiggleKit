@@ -1,11 +1,14 @@
-# ``JiggleKit``
+# JiggleKit
 
 ## Overview
 
 ``JiggleKit`` is a revolutionary SwiftUI package that enables your `Views` to jiggle, like the iPhone home screen "jiggle mode". It has been developed by Vis Fitness for implementing a jiggle-mode-like functionality in our upcoming [Vis](https://vis.fitness) iOS app. We think you're gonna to love it.
 
-![A set of rectangle of different shapes and colors all jiggling together in a delightful manner.](jiggle)
+![A set of rectangle of different shapes and colors all jiggling together in a delightful manner.](/Documentation/jiggle.gif)
 
+> [!NOTE]
+> Be sure to check out the package documentation [here](https://visfitness.github.io/JiggleKit/documentation/JiggleKit)
+                                        
 ## Usage
 
 Using this groundbreaking package is easy, as demonstrated by the following example:
@@ -42,19 +45,6 @@ struct VeryJigglingRectable: View {
 }
 ```
 
-## Github
+## Copyright and License
 
-The git repository as well as issue tracker for this project can be found at  [https://github.com/visfitness/JiggleKit](https://github.com/visfitness/JiggleKit).
-
-
-## Topics
-
-### Regular usage
-
-- ``SwiftUICore/View/jiggling(isJiggling:intensity:)``
-- ``JiggleKit/JiggleIntensity``
-
-### Fine-tuned usage
-
-- ``SwiftUICore/View/jiggling(isJiggling:rotationTravel:offset:)``
-- ``SwiftUICore/View/jiggling(isJiggling:rotationAngle:offset:)``
+Copyright [Vis Fitness Inc](https://vis.fitness). Licensed under the [MIT License](https://github.com/visfitness/reorderable/blob/main/LICENSE)

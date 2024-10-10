@@ -17,8 +17,6 @@ extension View {
   /// that looks consistent across shapes of different sizes, this modifier allows the amount of pixels to be travelled
   /// so that the  the *angular speed* matches across shapes.
   ///
-  /// Having shapes of different size with the same rotation angle results in the bigger shape looking like they're
-  /// jiggling much harder than the smaller ones.
   ///
   /// - Parameters:
   ///   - isJiggling: Whether this view should be jiggling or not.
@@ -46,9 +44,11 @@ extension View {
   }
 }
 
-/// The default amount of pixels travelled by the corner of the shape due to the rotation.
+/// The default amount of pixels travelled by the corner of the shape due to the
+@_documentation(visibility: internal)
 public let defaultRotationTravel: CGFloat = 1.8
 /// The default amount of pixels travelled by the shape
+@_documentation(visibility: internal)
 public let defaultOffset: CGFloat = 0.8
 
 /// The intensity at which to jiggle.
