@@ -188,6 +188,9 @@ struct JiggleModifier: ViewModifier {
 
   func body(content: Content) -> some View {
     content
+      .transaction { t in
+        t.animation = nil
+      }
       .offset(x: 0, y: offsetAmount)
       .animation(
         offsetAnimation,
