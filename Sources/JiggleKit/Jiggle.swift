@@ -189,24 +189,25 @@ struct JiggleModifier: ViewModifier {
   func body(content: Content) -> some View {
     content
       .transaction { t in
-        t.animation = nil
+        t.animation = offsetAnimation
+      } body: {
+        $0.offset(x: 0, y: offsetAmount)
       }
-      .offset(x: 0, y: offsetAmount)
-      .animation(
-        offsetAnimation,
-        value: triggered == jiggle
-      )
-      .rotationEffect(.degrees(rotateAmount), anchor: .center)
+      .transaction { t in
+        t.animation = rotateAnimation
+      } body: {
+        $0.rotationEffect(.degrees(rotateAmount), anchor: .center)
+      }
       .animation(
         rotateAnimation,
         value: triggered == jiggle
       )
-      .rotationEffect(.degrees(jiggle ? (reversed ? rotation : -rotation): 0), anchor: .center)
-      .animation(
-        .easeInOut(duration: 0.12)
-        .delay(0.06),
-        value: triggered == jiggle
-      )
+      .transaction { t in
+        t.animation = .easeInOut(duration: 0.12)
+          .delay(0.06)
+      } body: {
+        $0.rotationEffect(.degrees(jiggle ? (reversed ? rotation : -rotation): 0), anchor: .center)
+      }
       .onAppear {
         // We changed this here so that the animation runs even if it starts with `jiggle == true`
         if (jiggle) {
