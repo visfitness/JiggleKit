@@ -140,9 +140,10 @@ struct JiggleModifier: ViewModifier {
   @State private var reversed: Bool = false
   
   private var offsetAmount: CGFloat {
-    if (!jiggle || !triggered) {
+    if (!jiggle ) {
       return 0.0
     }
+
     return offset
   }
   
@@ -188,26 +189,17 @@ struct JiggleModifier: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .transaction { t in
-        t.animation = offsetAnimation
-      } body: {
-        $0.offset(x: 0, y: offsetAmount)
+      .animation(offsetAnimation) {
+        $0.projectionOffset(x: 0, y: offsetAmount)
       }
-      .transaction { t in
-        t.animation = rotateAnimation
-      } body: {
+      .animation(rotateAnimation) {
         $0.rotationEffect(.degrees(rotateAmount), anchor: .center)
       }
-      .animation(
-        rotateAnimation,
-        value: triggered == jiggle
-      )
-      .transaction { t in
-        t.animation = .easeInOut(duration: 0.12)
-          .delay(0.06)
-      } body: {
+      .animation(.easeInOut(duration: 0.12)
+          .delay(0.06)) {
         $0.rotationEffect(.degrees(jiggle ? (reversed ? rotation : -rotation): 0), anchor: .center)
       }
+
       .onAppear {
         // We changed this here so that the animation runs even if it starts with `jiggle == true`
         if (jiggle) {
@@ -223,6 +215,30 @@ struct JiggleModifier: ViewModifier {
   private func randomize(interval: TimeInterval, withVariance variance: Double) -> TimeInterval {
     interval + variance * (Double.random(in: -1...1))
   }
+}
+
+// There is a really annoying bug in SwiftUI where `.offset` can't be animated using scoped animations. See https://forums.developer.apple.com/forums/thread/748852
+// This is to fix that.
+private extension View {
+    func projectionOffset(x: CGFloat = 0, y: CGFloat = 0) -> some View {
+        self.projectionOffset(.init(x: x, y: y))
+    }
+
+    func projectionOffset(_ translation: CGPoint) -> some View {
+        modifier(ProjectionOffsetEffect(translation: translation))
+    }
+}
+
+private struct ProjectionOffsetEffect: GeometryEffect {
+    var translation: CGPoint
+    var animatableData: CGPoint.AnimatableData {
+        get { translation.animatableData }
+        set { translation = .init(x: newValue.first, y: newValue.second) }
+    }
+
+    public func effectValue(size: CGSize) -> ProjectionTransform {
+        .init(CGAffineTransform(translationX: translation.x, y: translation.y))
+    }
 }
 
 #Preview("Many Small Squares") {
@@ -301,6 +317,24 @@ struct JiggleModifier: ViewModifier {
     Toggle("Jiggle", isOn: $isJiggling)
       .padding()
     ForEach(Array([JiggleIntensity.subtle, JiggleIntensity.moderate, JiggleIntensity.vivacious, JiggleIntensity.extreme].enumerated()), id: \.offset) { index, intensity in
+      RoundedRectangle(cornerRadius: 24)
+        .fill(Color(colors[index % colors.count]))
+        .frame(width: 128, height: 128)
+        .jiggling(isJiggling: isJiggling, intensity: intensity)
+    }
+  }.padding()
+}
+
+
+#Preview("Single for logs") {
+  @Previewable @State var isJiggling: Bool = false
+  
+  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  
+  VStack {
+    Toggle("Jiggle", isOn: $isJiggling)
+      .padding()
+    ForEach(Array([JiggleIntensity.extreme].enumerated()), id: \.offset) { index, intensity in
       RoundedRectangle(cornerRadius: 24)
         .fill(Color(colors[index % colors.count]))
         .frame(width: 128, height: 128)
