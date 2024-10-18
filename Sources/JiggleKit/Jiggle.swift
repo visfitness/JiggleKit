@@ -140,7 +140,7 @@ struct JiggleModifier: ViewModifier {
   @State private var reversed: Bool = false
   
   private var offsetAmount: CGFloat {
-    if (!jiggle ) {
+    if (!jiggle || !triggered) {
       return 0.0
     }
 
@@ -206,6 +206,11 @@ struct JiggleModifier: ViewModifier {
           triggered = true
         }
       }
+      .onDisappear {
+        if (jiggle) {
+          triggered = false
+        }
+      }
       .onChange(of: jiggle) {
         triggered = jiggle
         reversed = Bool.random()
@@ -217,29 +222,6 @@ struct JiggleModifier: ViewModifier {
   }
 }
 
-// There is a really annoying bug in SwiftUI where `.offset` can't be animated using scoped animations. See https://forums.developer.apple.com/forums/thread/748852
-// This is to fix that.
-private extension View {
-    func projectionOffset(x: CGFloat = 0, y: CGFloat = 0) -> some View {
-        self.projectionOffset(.init(x: x, y: y))
-    }
-
-    func projectionOffset(_ translation: CGPoint) -> some View {
-        modifier(ProjectionOffsetEffect(translation: translation))
-    }
-}
-
-private struct ProjectionOffsetEffect: GeometryEffect {
-    var translation: CGPoint
-    var animatableData: CGPoint.AnimatableData {
-        get { translation.animatableData }
-        set { translation = .init(x: newValue.first, y: newValue.second) }
-    }
-
-    public func effectValue(size: CGSize) -> ProjectionTransform {
-        .init(CGAffineTransform(translationX: translation.x, y: translation.y))
-    }
-}
 
 #Preview("Many Small Squares") {
   @Previewable @State var isJiggling: Bool = false
@@ -339,6 +321,26 @@ private struct ProjectionOffsetEffect: GeometryEffect {
         .fill(Color(colors[index % colors.count]))
         .frame(width: 128, height: 128)
         .jiggling(isJiggling: isJiggling, intensity: intensity)
+    }
+  }.padding()
+}
+
+#Preview("With disappear") {
+  @Previewable @State var isJiggling: Bool = true
+  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  
+  VStack {
+    Toggle("Jiggle", isOn: $isJiggling)
+      .padding()
+    ScrollView {
+      LazyVStack {
+        ForEach(Array((1...100).enumerated()), id: \.offset) { index, value in
+          RoundedRectangle(cornerRadius: 24)
+            .fill(Color(colors[index % colors.count]))
+            .frame(width: 128, height: 128)
+            .jiggling(isJiggling: isJiggling, intensity: JiggleIntensity.vivacious)
+        }
+      }
     }
   }.padding()
 }
