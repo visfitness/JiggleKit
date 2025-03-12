@@ -44,6 +44,7 @@ extension View {
   }
 }
 
+
 /// The default amount of pixels travelled by the corner of the shape due to the
 @_documentation(visibility: internal)
 public let defaultRotationTravel: CGFloat = 1.8
@@ -114,6 +115,7 @@ struct JiggleModifier: ViewModifier {
     self.jiggle = jiggle
     self.rotation = rotation
     self.offset = offset
+    self._id = State(initialValue: UUID())
   }
   
   init(jiggle: Bool, size: CGSize, rotationTravel: CGFloat, offset: CGFloat) {
@@ -134,10 +136,12 @@ struct JiggleModifier: ViewModifier {
     self.rotation = angleDegrees
     
     self.offset = offset
+    self._id = State(initialValue: UUID())
   }
 
   @State private var triggered: Bool = false
   @State private var reversed: Bool = false
+  @State private var id: UUID
   
   private var offsetAmount: CGFloat {
     if (!jiggle || !triggered) {
@@ -148,7 +152,7 @@ struct JiggleModifier: ViewModifier {
   }
   
   private var offsetAnimation: Animation {
-    if (!jiggle) {
+    if (!jiggle || !triggered) {
       return
         .easeInOut(duration: 0.14)
     } else {
@@ -160,7 +164,7 @@ struct JiggleModifier: ViewModifier {
   }
   
   private var rotateAmount: CGFloat {
-    if (!jiggle) {
+    if (!jiggle || !triggered) {
       return 0
     }
     // The reason we multiply by (-)2 here is because we'll counter rotate by a
@@ -176,7 +180,7 @@ struct JiggleModifier: ViewModifier {
   }
   
   private var rotateAnimation: Animation {
-    if (!jiggle) {
+    if (!jiggle || !triggered) {
       return
         .easeInOut(duration: 0.12)
     } else {
@@ -201,9 +205,17 @@ struct JiggleModifier: ViewModifier {
       }
 
       .onAppear {
-        // We changed this here so that the animation runs even if it starts with `jiggle == true`
+        // We change this here so that the animation runs even if it starts with `jiggle == true`
         if (jiggle) {
-          triggered = true
+          // Fixes a bug where when you put this in a LazyVStack, if you scroll too fast,
+          // the animation doesn't actually trigger, even though all the changes
+          // seem to happen in the right order. This is quite a hack, but I haven't
+          // found a better solution.
+          triggered = false
+          Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(50))
+            triggered = true
+          }
         }
       }
       .onDisappear {
