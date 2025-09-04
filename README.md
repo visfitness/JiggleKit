@@ -14,7 +14,7 @@
 Using this groundbreaking package is easy, as demonstrated by the following example:
 
 ```swift
-struct JigglingRectable: View {
+struct JigglingRectangle: View {
 
   var body: some View {
       RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -31,7 +31,7 @@ struct JigglingRectable: View {
 However, for an even jigglier rounded rectangle, one can even set the intensity of the jiggling.
 
 ```swift
-struct VeryJigglingRectable: View {
+struct VeryJigglingRectangle: View {
 
   var body: some View {
       RoundedRectangle(cornerRadius: 12, style: .continuous)
