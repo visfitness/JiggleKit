@@ -239,7 +239,7 @@ struct JiggleModifier: ViewModifier {
 #Preview("Many Small Squares") {
   @Previewable @State var isJiggling: Bool = false
   
-  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  let colors: [Color] = [.red, .blue, .yellow, .green, .orange, .purple]
   
   VStack {
     Toggle("Jiggle", isOn: $isJiggling)
@@ -263,7 +263,7 @@ struct JiggleModifier: ViewModifier {
 #Preview("Big And Small Rectangles") {
   @Previewable @State var isJiggling: Bool = false
   
-  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  let colors: [Color] = [.red, .blue, .yellow, .green, .orange, .purple]
   
   VStack {
     Toggle("Jiggle", isOn: $isJiggling)
@@ -308,7 +308,7 @@ struct JiggleModifier: ViewModifier {
 #Preview("Different Intensity") {
   @Previewable @State var isJiggling: Bool = false
   
-  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  let colors: [Color] = [.red, .blue, .yellow, .green, .orange, .purple]
   
   VStack {
     Toggle("Jiggle", isOn: $isJiggling)
@@ -326,7 +326,7 @@ struct JiggleModifier: ViewModifier {
 #Preview("Single for logs") {
   @Previewable @State var isJiggling: Bool = false
   
-  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  let colors: [Color] = [.red, .blue, .yellow, .green, .orange, .purple]
   
   VStack {
     Toggle("Jiggle", isOn: $isJiggling)
@@ -343,7 +343,7 @@ struct JiggleModifier: ViewModifier {
 @available(iOS 17.0, *)
 #Preview("With disappear") {
   @Previewable @State var isJiggling: Bool = true
-  let colors = [UIColor.systemRed, UIColor.systemBlue, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemOrange, UIColor.systemPurple]
+  let colors: [Color] = [.red, .blue, .yellow, .green, .orange, .purple]
   
   VStack {
     Toggle("Jiggle", isOn: $isJiggling)
